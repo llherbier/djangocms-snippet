@@ -60,6 +60,10 @@ class SnippetFragment(template.Node):
         :rtype: string
         :return: the HTML for the snippet
         """
+        # provide a copy of the context as 'object' is modified
+        import copy
+        new_context = copy.copy(context)
+        
         # Default assume this is directly an instance
         snippet_instance = self.snippet_id_varname.resolve(context)
         # Assume this is slug
@@ -70,7 +74,7 @@ class SnippetFragment(template.Node):
             elif isinstance(snippet_instance, int):
                 snippet_instance = Snippet.objects.get(pk=snippet_instance)
 
-            return mark_safe(self.get_content_render(context,
+            return mark_safe(self.get_content_render(new_context,
                                                      snippet_instance))
 
         # Rely on the fact that manager something went wrong
